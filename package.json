@@ -1,5 +1,5 @@
 {
-  "name": "coop-notes-app",
+  "name": "collaborative-notes-app",
   "private": true,
   "workspaces": [
     "client",
