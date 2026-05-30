@@ -3,9 +3,11 @@ import { CreateUserInput } from "@customTypes/user.types";
 
 class UserService {
   async findByEmail(email: string, includePassword = false) {
-    return User.findByEmail(email, includePassword);
+    return await User.findByEmail(email, includePassword);
   }
-
+  async findById(id: string) {
+    return await User.findById(id);
+  }
   async create(user: CreateUserInput) {
     return User.create(user);
   }
