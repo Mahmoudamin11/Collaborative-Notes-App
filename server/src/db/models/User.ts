@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import type { IAccount } from "@shared/types/user";
 import type { IUser } from "@shared/types/user";
 
-
 export interface IUserDocument
   extends
     Omit<
@@ -24,7 +23,10 @@ export interface IUserDocument
  * What the User Model class looks like — includes our custom static methods.
  */
 export interface IUserModel extends Model<IUserDocument> {
-  findByEmail(email: string, includePassword?: boolean): Promise<IUserDocument | null>;
+  findByEmail(
+    email: string,
+    includePassword?: boolean,
+  ): Promise<IUserDocument | null>;
 }
 
 interface IAccountDocument extends IAccount {
@@ -55,6 +57,11 @@ const AccountSchema = new Schema<IAccountDocument>(
   { _id: false },
 );
 
+type UserResponse = Partial<IUserDocument> & {
+  _id?: mongoose.Types.ObjectId;
+  id?: string;
+};
+
 const UserSchema = new Schema<IUserDocument, IUserModel>(
   {
     name: {
@@ -82,7 +89,10 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
     timestamps: true,
     toJSON: {
       virtuals: true,
-      transform(_doc, ret: Partial<IUserDocument>) {
+      transform(_doc, ret: UserResponse) {
+        ret.id = ret._id!.toString();
+
+        delete ret._id;
         delete ret.password;
         delete ret.__v;
         return ret;
@@ -91,7 +101,6 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
     toObject: { virtuals: true },
   },
 );
-
 
 UserSchema.index(
   { "accounts.provider": 1, "accounts.providerAccountId": 1 },
@@ -118,17 +127,17 @@ UserSchema.methods.comparePassword = async function (
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.statics.findByEmail = function (
+UserSchema.statics.findByEmail = async function (
   email: string,
-  includePassword: boolean = false
+  includePassword: boolean = false,
 ): Promise<IUserDocument | null> {
   const query = this.findOne({ email: email.toLowerCase().trim() });
-  
+
   if (includePassword) {
     query.select("+password"); // Tells mongoose to override 'select: false'
   }
-  
-  return query;
+
+  return await query;
 };
 
 const User =

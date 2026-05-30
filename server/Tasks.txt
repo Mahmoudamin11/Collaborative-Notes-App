@@ -1,0 +1,14 @@
+
+| REMAIN
+    • Use DB REPOS
+    • Know the difference between (token verfication & ensuring the user of that token still available)? 
+        why should i do both & what actually verify token does ? 
+    • Email Verfication
+    • 
+
+======================================================================================================================================================
+
+| DONE 
+    • Handle generating the access token from the refresh token  
+    • In Register should we store the token or redirect it to the login page
+    • 

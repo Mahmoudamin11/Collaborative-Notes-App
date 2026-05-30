@@ -2,6 +2,7 @@ import { LoginInput, RegisterInput } from "@validators/auth.schema";
 import UserService from "./user.service";
 import BadRequestError from "@errors/bad-request";
 import UnauthenticatedError from "@/errors/unauthenticated";
+import { TokenService } from "./token.service";
 
 class AuthService {
   userService: UserService;
@@ -31,8 +32,8 @@ class AuthService {
 
   async login(userData: LoginInput) {
     const { email, password } = userData;
-    // const user = await this.userService.findByEmail(email);
-    const user = await this.userService.findByEmail(email, true); 
+
+    const user = await this.userService.findByEmail(email, true);
     if (!user) {
       throw new UnauthenticatedError("Invalid credentials");
     }
@@ -42,9 +43,35 @@ class AuthService {
       throw new UnauthenticatedError("Invalid credentials");
     }
 
-    // TODO : handle generate the token & return it with the user
+    const payload = {
+      userId: user._id,
+      email: user.email,
+    };
+    const accessToken = TokenService.generateAccessToken(payload);
+    const refreshToken = TokenService.generateRefreshToken(payload);
+    return {
+      user: user.toJSON(),
+      accessToken,
+      refreshToken,
+    };
+  }
+  async refresh(refreshToken?: string) {
+    if (!refreshToken) {
+      throw new UnauthenticatedError("Refresh token missing");
+    }
 
-    return user;
+    const payload = TokenService.verifyRefreshToken(refreshToken);
+    const user = await this.userService.findById(payload.userId);
+
+    if (!user) {
+      throw new UnauthenticatedError("User not found");
+    }
+    const accessToken = TokenService.generateAccessToken({
+      userId: payload.userId,
+      email: payload.email,
+    });
+
+    return accessToken;
   }
 }
 
