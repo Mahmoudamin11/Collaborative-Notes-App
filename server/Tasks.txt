@@ -1,6 +1,10 @@
 
 | REMAIN
-    • Use DB REPOS
+    • Test Backend
+        Vitest/Jest
+        Mocking
+        Dependency injection
+        Better architecture
     • Know the difference between (token verfication & ensuring the user of that token still available)? 
         why should i do both & what actually verify token does ? 
     • Email Verfication
@@ -11,4 +15,12 @@
 | DONE 
     • Handle generating the access token from the refresh token  
     • In Register should we store the token or redirect it to the login page
+    • Use DB REPOS
     • 
+
+======================================================================================================================================================
+1. Add backend tests for auth
+2. Build Notes CRUD
+3. Add authorization (users can only edit their own notes)
+4. Add frontend pages
+5. Add frontend tests

@@ -1,15 +1,22 @@
-import User from "@db/models/User";
+import UserRepository from "@/repositories/user.repo";
 import { CreateUserInput } from "@customTypes/user.types";
 
 class UserService {
+  private userRepository: UserRepository;
+
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
+
   async findByEmail(email: string, includePassword = false) {
-    return await User.findByEmail(email, includePassword);
+    return this.userRepository.findByEmail(email, includePassword);
   }
   async findById(id: string) {
-    return await User.findById(id);
+    return this.userRepository.findById(id);
   }
+
   async create(user: CreateUserInput) {
-    return User.create(user);
+    return this.userRepository.create(user);
   }
 }
 
