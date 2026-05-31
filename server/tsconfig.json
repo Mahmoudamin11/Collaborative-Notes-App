@@ -13,7 +13,7 @@
       "@errors/*": ["./src/errors/*"],
       "@controllers/*": ["./src/controllers/*"],
       "@middleware/*": ["./src/middleware/*"],
-      "@reposotories/*": ["./src/reposotories/*"],
+      "@repositories/*": ["./src/repositories/*"],
       "@customTypes/*": ["./src/types/*"],
       "@validators/*": ["./src/validators/*"],
       "@utils/*": ["./src/utils/*"],
