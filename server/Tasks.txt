@@ -8,7 +8,7 @@
     • Know the difference between (token verfication & ensuring the user of that token still available)? 
         why should i do both & what actually verify token does ? 
     • Email Verfication
-    • 
+    •  configure strict SameSite settings and anti-forgery tokens  to prevent " CSRF "
 
 ======================================================================================================================================================
 
