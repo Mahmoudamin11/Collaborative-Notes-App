@@ -5,10 +5,7 @@ import UnauthenticatedError from "@/errors/unauthenticated";
 import { TokenService } from "./token.service";
 
 class AuthService {
-  userService: UserService;
-  constructor() {
-    this.userService = new UserService();
-  }
+  constructor(private userService: UserService = new UserService()) {}
 
   async register(userData: RegisterInput) {
     // Check if user already exists
@@ -37,6 +34,8 @@ class AuthService {
     if (!user) {
       throw new UnauthenticatedError("Invalid credentials");
     }
+
+    // TODO: Auth Service shouldn't know about mongoose as below
     const isPasswordCorrect = await user.comparePassword(password);
 
     if (!isPasswordCorrect) {

@@ -1,0 +1,28 @@
+• A rule that will help you throughout your career:
+    Every if, throw, validation rule, permission check, and business rule is a candidate for a test.
+
+
+Checklist 
+                                    |            DONE
+                                    |           AuthService.register
+                                    |           --------------------
+                                    |           ✓ creates user
+                                    |           ✓ rejects existing email
+                                    |
+                                    |           AuthService.login
+                                    |           -----------------
+                                    |           ✓ logs in successfully
+                                    |           ✓ rejects unknown email
+                                    |           ✓ rejects invalid password
+                                    |
+AuthService.refresh                 |
+-------------------                 |
+✓ returns new accesstoken          
+✓ rejects missing token
+✓ rejects invalid token
+✓ rejects deleted user
+
+
+
+4. refresh → missing token
+5. refresh → invalid user
