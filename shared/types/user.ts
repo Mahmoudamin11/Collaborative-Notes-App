@@ -32,8 +32,6 @@ export interface IUser {
   emailVerified: string | null;
   image:         string | null;
   accounts:      IAccount[];
-  noteIds:       string[];      // owned note IDs (as strings)
-  sharedNoteIds: string[];      // shared note IDs (as strings)
   createdAt:     string;        // ISO date string e.g. "2025-01-01T00:00:00.000Z"
   updatedAt:     string;
 }

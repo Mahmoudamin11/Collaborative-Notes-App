@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "@routes/auth.routes";
 import { globalErrorHandler } from "@middleware/error-handler";
 import notFound from "@middleware/not-found";
+import notesRouter from "./routes/notes.routes";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/notes", notesRouter)
 app.use(notFound);
 app.use(globalErrorHandler);
 

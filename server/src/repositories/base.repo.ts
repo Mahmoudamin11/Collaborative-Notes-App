@@ -7,8 +7,12 @@ class BaseRepository<T extends Document> {
     this.model = model;
   }
 
-  async findById(id: string) {
+  async findById(id: string | string[]) {
     return this.model.findById(id);
+  }
+
+  async findByEmail(email: string) {
+    return this.model.findOne({ email: email.toLowerCase().trim() });
   }
 
   async create(data: Partial<T>) {
@@ -23,13 +27,15 @@ class BaseRepository<T extends Document> {
     return this.model.find(filter);
   }
 
-  async updateById(id: string, data: Partial<T>) {
+  async updateById(id: string | string[], data: Partial<T>) {
     return this.model.findByIdAndUpdate(id, data, {
       new: true,
     });
   }
-
-  async deleteById(id: string) {
+  async deleteOne(id: string | string[]) {
+    return this.model.deleteOne({ _id: id });
+  }
+  async deleteById(id: string | string[]) {
     return this.model.findByIdAndDelete(id);
   }
 }

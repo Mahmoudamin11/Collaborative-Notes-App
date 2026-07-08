@@ -9,7 +9,7 @@
     "test:coverage": "vitest --coverage",
     "dev": "tsx watch --inspect src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.ts"
   },
   "keywords": [],
   "author": "",

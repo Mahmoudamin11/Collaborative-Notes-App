@@ -1,5 +1,6 @@
 
 | REMAIN
+    • Convert all isCollab or isOwner to Mongo Methods
     • Test Backend
         Vitest/Jest
         Mocking
