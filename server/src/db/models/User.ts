@@ -11,10 +11,9 @@ export interface IUserDocument
       "_id" | "createdAt" | "updatedAt" | "noteIds" | "sharedNoteIds"
     >,
     Document {
+  id: string;
   password?: string;
   accounts: IAccount[];
-  noteIds: mongoose.Types.ObjectId[]; // ← override with correct server type
-  sharedNoteIds: mongoose.Types.ObjectId[]; // ← override with correct server type
   __v?: number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -82,8 +81,6 @@ const UserSchema = new Schema<IUserDocument, IUserModel>(
     image: { type: String, default: null },
     password: { type: String, select: false },
     accounts: { type: [AccountSchema], default: [] },
-    noteIds: [{ type: Schema.Types.ObjectId, ref: "Note" }],
-    sharedNoteIds: [{ type: Schema.Types.ObjectId, ref: "Note" }],
   },
   {
     timestamps: true,
@@ -139,6 +136,12 @@ UserSchema.statics.findByEmail = async function (
 
   return await query;
 };
+
+UserSchema.virtual("notes", {
+  ref: "Note",
+  localField: "_id",
+  foreignField: "owner",
+});
 
 const User =
   (mongoose.models.User as IUserModel) ||

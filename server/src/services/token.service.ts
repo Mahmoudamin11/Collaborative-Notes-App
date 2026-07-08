@@ -20,7 +20,14 @@ export class TokenService {
   static generateRefreshToken(payload: TokenPayload): string {
     return jwt.sign(payload, this.REFRESH_SECRET, { expiresIn: "7d" });
   }
-
+  
+  static verifyAccessToken(token: string) {
+    try {
+      return jwt.verify(token, this.ACCESS_SECRET) as JwtPayload;
+    } catch {
+      throw new UnauthenticatedError("Invalid access token");
+    }
+  }
   static verifyRefreshToken(token: string) {
     try {
       return jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as JwtPayload;

@@ -3,6 +3,12 @@ import AuthService from "@services/auth.service";
 import { LoginInput, RegisterInput } from "@validators/auth.schema";
 import { sendResponse } from "@/utils/sendResponse";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "strict" as const,
+};
+
 class AuthController {
   authService: AuthService;
   constructor() {
@@ -21,24 +27,32 @@ class AuthController {
     const { accessToken, refreshToken, user } =
       await this.authService.login(userData);
 
-    // Set the Refresh Token in a highly secure, HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
-      httpOnly: true, // Prevents XSS scripts from reading the token
-      secure: process.env.NODE_ENV === "production", // HTTPS only in production
-      sameSite: "strict", // Prevents CSRF attacks
+      ...cookieOptions,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    });
+
+    res.cookie("accessToken", accessToken, {
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 mins
     });
 
     sendResponse(res, 200, "User logged in successfully", {
       ...user,
-      accessToken,
     });
   };
 
   refresh = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+
     const accessToken = await this.authService.refresh(refreshToken);
-    sendResponse(res, 200, "Token refreshed successfully", accessToken);
+
+    res.cookie("accessToken", accessToken, {
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+
+    sendResponse(res, 200, "Token refreshed successfully", null);
   };
 }
 

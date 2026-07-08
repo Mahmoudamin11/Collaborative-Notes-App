@@ -1,24 +1,23 @@
-import { Request, Response, NextFunction } from "express";
-import { ZodObject } from "zod";
+import { NextFunction, Request, Response } from "express";
+import { ZodType } from "zod";
 
-/**
- * Validation middleware factory
- * Takes a Zod schema and returns Express middleware
- * Validates request body against the schema
- */
+type Schemas = {
+  body?: ZodType;
+  params?: ZodType;
+  query?: ZodType;
+};
+
 export const validate =
-  (schema: ZodObject) =>
+  (schema: Schemas) =>
   async (req: Request, res: Response, next: NextFunction) => {
-    // 1. Pass ONLY req.body if your schema is validating the body fields directly
-    const result = await schema.safeParseAsync(req.body);
+    try {
+      if (schema.body) req.body = await schema.body.parseAsync(req.body);
+      if (schema.params)
+        await schema.params.parseAsync(req.params);
+      if (schema.query) await schema.query.parseAsync(req.query);
 
-    // 2. Explicitly check if validation failed
-    if (!result.success) {
-      return next(result.error); // Hand the ZodError over to the global error handler
+      next();
+    } catch (error) {
+      next(error);
     }
-
-    // 3. Optional Best Practice: Replace req.body with the sanitized, stripped Zod data
-    req.body = result.data;
-
-    next();
   };

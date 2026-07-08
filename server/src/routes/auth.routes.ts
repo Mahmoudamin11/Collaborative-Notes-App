@@ -5,8 +5,8 @@ import { RegisterSchema, LoginSchema } from "@validators/auth.schema";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validate(RegisterSchema), authController.register);
-authRouter.post("/login", validate(LoginSchema), authController.login);
+authRouter.post("/register", validate({body: RegisterSchema}), authController.register);
+authRouter.post("/login", validate({body : LoginSchema}), authController.login);
 authRouter.post("/refresh", authController.refresh);
 
 export default authRouter;
